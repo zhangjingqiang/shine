@@ -42,3 +42,4 @@ end
 
 gem 'devise'
 gem 'bower-rails'
+gem 'faker'
