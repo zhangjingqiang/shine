@@ -47,3 +47,5 @@ end
 gem 'devise'
 gem 'bower-rails'
 gem 'faker'
+gem "angular-rails-templates"
+gem "sprockets", "~> 2.0"
