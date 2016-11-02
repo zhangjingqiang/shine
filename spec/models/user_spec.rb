@@ -8,6 +8,7 @@ describe User do
                    password:"qwertyuiop",
                    password_confirmation: "qwertyuiop")
     }
+
     it "absolutely prevents invalid email addresses" do
       expect{
         user.update_attribute(:email, "foo@bar.com")

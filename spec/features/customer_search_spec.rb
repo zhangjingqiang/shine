@@ -1,22 +1,48 @@
-require "rails_helper"
+require 'rails_helper'
 
 feature "Customer Search" do
-  let(:email) { "bob@example.com" }
-  let(:password) { "password1234" }
+  def create_customer(first_name: nil,
+                      last_name: nil,
+                      email: nil)
+
+    first_name ||= Faker::Name.first_name
+    last_name  ||= Faker::Name.last_name
+    email      ||= "#{Faker::Internet.user_name}#{rand(1000)}@" +
+                     "#{Faker::Internet.domain_name}"
+    Customer.create!(
+      first_name: first_name,
+       last_name: last_name,
+        username: "#{Faker::Internet.user_name}#{rand(1000)}",
+           email: email
+    )
+  end
+
+  let(:email)    { "bob@example.com" }
+  let(:password) { "password123" }
 
   before do
-    User.create!(email: email, password: password)
+    User.create!(email: email,
+                 password: password,
+                 password_confirmation: password)
 
-    create_customer(first_name: "Robert", last_name: "Aaron")
-    create_customer(first_name: "Bob", last_name: "Johnson")
-    create_customer(first_name: "JR", last_name: "Bob")
-    create_customer(first_name: "Bobby", last_name: "Dobbs")
-    create_customer(first_name: "Bob", last_name: "Jones",
-                    email: "bob123@somewhere.com")
+    create_customer first_name: "Robert",
+                     last_name: "Aaron"
 
+    create_customer first_name: "Bob",
+                     last_name: "Johnson"
+
+    create_customer first_name: "JR",
+                     last_name: "Bob"
+
+    create_customer first_name: "Bobby",
+                     last_name: "Dobbs"
+
+    create_customer first_name: "Bob",
+                     last_name: "Jones",
+                         email: "bob123@somewhere.net"
     visit "/customers"
     fill_in      "Email",    with: "bob@example.com"
-    fill_in      "Password", with: "password1234"
+    fill_in      "Password", with: "password123"
     click_button "Log in"
   end
 
@@ -24,11 +50,12 @@ feature "Customer Search" do
     within "section.search-form" do
       fill_in "keywords", with: "bob"
     end
+
     within "section.search-results" do
       expect(page).to have_content("Results")
       expect(page.all("ol li.list-group-item").count).to eq(4)
 
-      expect(page.all("ol li.list-group-item")[0]).to have_content("JR")
+      expect(page.all("ol li.list-group-item")[0]).to have_content("Jr")
       expect(page.all("ol li.list-group-item")[0]).to have_content("Bob")
 
       expect(page.all("ol li.list-group-item")[3]).to have_content("Bob")
@@ -38,8 +65,9 @@ feature "Customer Search" do
 
   scenario "Search by Email" do
     within "section.search-form" do
-      fill_in "keywords", with: "bob123@somewhere.com"
+      fill_in "keywords", with: "bob123@somewhere.net"
     end
+    
     within "section.search-results" do
       expect(page).to have_content("Results")
       expect(page.all("ol li.list-group-item").count).to eq(4)
@@ -47,24 +75,11 @@ feature "Customer Search" do
       expect(page.all("ol li.list-group-item")[0]).to have_content("Bob")
       expect(page.all("ol li.list-group-item")[0]).to have_content("Jones")
 
-      expect(page.all("ol li.list-group-item")[1]).to have_content("JR")
+      expect(page.all("ol li.list-group-item")[1]).to have_content("Jr")
       expect(page.all("ol li.list-group-item")[1]).to have_content("Bob")
 
       expect(page.all("ol li.list-group-item")[3]).to have_content("Bob")
       expect(page.all("ol li.list-group-item")[3]).to have_content("Johnson")
     end
   end
-end
-
-def create_customer(first_name: nil, last_name: nil, email: nil)
-  first_name ||= FFaker::Name.first_name
-  last_name  ||= FFaker::Name.last_name
-  email      ||= FFaker::Internet.user_name + rand(1000).to_s + "@" +
-                  FFaker::Internet.domain_name
-  Customer.create!(
-    first_name:  first_name,
-    last_name:   last_name,
-    username:    FFaker::Internet.user_name + rand(100).to_s,
-    email:       email
-  )
 end

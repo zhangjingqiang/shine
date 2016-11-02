@@ -1,5 +1,6 @@
 @import "bootstrap-sass-official/assets/stylesheets/bootstrap-sprockets";
 @import "bootstrap-sass-official/assets/stylesheets/bootstrap";
+
 /*
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
@@ -16,3 +17,17 @@
  *= require_self
  *= require 'bootstrap-sass-official'
  */
+
+.margin-top-none {
+  margin-top: 0;
+}
+
+.panel-heading h1,
+.panel-heading h2,
+.panel-heading h3,
+.panel-heading h4,
+.panel-heading h5,
+.panel-heading h6 {
+  margin-top: 0;
+  margin-bottom: 0;
+}

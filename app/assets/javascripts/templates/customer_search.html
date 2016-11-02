@@ -1,20 +1,21 @@
 <header>
-  <h1 class="h2">Custmoer Search</h1>
+  <h1 class="h2">Customer Search</h1>
 </header>
 <section class="search-form">
-  <form action="">
-    <label for="keywords" class="sr-only">Keywords</label>
-    <input type="text"
-      name="keywords"
-      class="form-control input-lg"
-      placeholder="First Name, Last Name, or Email Address"
-      ng-change="search(keywords)"
-      ng-model="keywords">
+  <form>
+    <label for="search.keywords" class="sr-only">Keywords</label>
+    <input type="text" 
+           name="keywords" 
+           class="form-control input-lg"
+           placeholder="First Name, Last Name, or Email Address"
+           ng-change="search(keywords)"
+           ng-model="keywords">
   </form>
-  <h1 class="searchedFor" ng-if="searchedFor">
-    <small>Searched for:</small> {{ searchedFor }}
-  </h1>
 </section>
+<aside class="sr-only loading-progress">
+  <span ng-if="loading" class="loading">Loading</span>
+  <span ng-if="!loading" class="not-loading">Done Loading</span>
+</aside>
 <section class="search-results" ng-if="customers.length > 0">
   <header>
     <h1 class="h3">Results</h1>
@@ -25,28 +26,15 @@
         <a href="" ng-click="previousPage()">&larr; Previous</a>
       </li>
       <li class="next">
-        <a href="" ng-click="nextPage()">&rarr; Next</a>
+        <a href="" ng-click="nextPage()">Next &rarr;</a>
       </li>
     </ul>
   </nav>
+
   <ol class="list-group">
-    <li class="list-group-item clearfix"
-      ng-repeat="customer in customers">
-      <h3 class="pull-right">
-        <small class="text-uppercase">Joined</small>
-        {{ customer.created_at | date }}
-      </h3>
-      <h2 class="h3">
-        {{ customer.first_name }} {{ customer.last_name }}
-        <small>{{ customer.username }}</small>
-      </h2>
-      <div class="pull-right">
-        <button class="btn btn-small btn-primary"
-          ng-click="viewDetails(customer)">
-        View Details...
-        </button>
-      </div>
-      <h4>{{ customer.email }}</h4>
+    <li class="list-group-item"
+        ng-repeat="customer in customers">
+      <customer-summary cust="customer" view-details-function="viewDetails"></customer-summary>
     </li>
   </ol>
   <nav>
@@ -55,7 +43,7 @@
         <a href="" ng-click="previousPage()">&larr; Previous</a>
       </li>
       <li class="next">
-        <a href="" ng-click="nextPage()">&rarr; Next</a>
+        <a href="" ng-click="nextPage()">Next &rarr;</a>
       </li>
     </ul>
   </nav>

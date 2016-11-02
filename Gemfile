@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+ruby '2.3.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6'
@@ -36,7 +37,9 @@ group :development, :test do
   gem "rspec-rails", '~> 3.0'
   gem 'poltergeist'
   gem 'database_cleaner'
+  gem 'factory_girl_rails'
   gem 'teaspoon-jasmine'
+  gem 'faker'
 end
 
 group :development do
@@ -46,6 +49,5 @@ end
 
 gem 'devise'
 gem 'bower-rails'
-gem 'ffaker'
 gem "angular-rails-templates"
 gem "sprockets", "~> 2.0"

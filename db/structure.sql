@@ -27,7 +27,32 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
+--
+-- Name: hstore; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS hstore WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION hstore; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION hstore IS 'data type for storing sets of (key, value) pairs';
+
+
 SET search_path = public, pg_catalog;
+
+--
+-- Name: customer_status; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE customer_status AS ENUM (
+    'signed_up',
+    'verified',
+    'inactive'
+);
+
 
 --
 -- Name: refresh_customer_details(); Type: FUNCTION; Schema: public; Owner: -
@@ -89,7 +114,10 @@ CREATE TABLE customers (
     email character varying NOT NULL,
     username character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    insights json DEFAULT '{}'::json,
+    status customer_status DEFAULT 'signed_up'::customer_status NOT NULL,
+    bio text
 );
 
 
@@ -261,6 +289,8 @@ CREATE TABLE users (
     last_sign_in_ip inet,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
+    roles character varying[] DEFAULT '{}'::character varying[],
+    settings hstore DEFAULT ''::hstore,
     CONSTRAINT email_must_be_company_email CHECK (((email)::text ~* '^[^@]+@example\.com'::text))
 );
 
@@ -382,6 +412,13 @@ CREATE UNIQUE INDEX customer_details_customer_id ON customer_details USING btree
 
 
 --
+-- Name: customers_bio_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX customers_bio_index ON customers USING gin (to_tsvector('english'::regconfig, bio));
+
+
+--
 -- Name: customers_lower_email; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -484,4 +521,14 @@ INSERT INTO schema_migrations (version) VALUES ('20161031081243');
 INSERT INTO schema_migrations (version) VALUES ('20161031083206');
 
 INSERT INTO schema_migrations (version) VALUES ('20161031085052');
+
+INSERT INTO schema_migrations (version) VALUES ('20161102021045');
+
+INSERT INTO schema_migrations (version) VALUES ('20161102021118');
+
+INSERT INTO schema_migrations (version) VALUES ('20161102021143');
+
+INSERT INTO schema_migrations (version) VALUES ('20161102021203');
+
+INSERT INTO schema_migrations (version) VALUES ('20161102021222');
 
